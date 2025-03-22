@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ADHD Coach Dashboard</title>
+  <title>Your ADHD Coach</title>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -35,7 +35,12 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     header.active { display: flex; }
-    header h1 { margin: 0; color: var(--primary-color); }
+    header h1 { margin: 0; color: var(--primary-color); display: flex; align-items: center; gap: 0.5rem; }
+    header img.logo {
+      height: 40px;
+      vertical-align: middle;
+      border-radius: 50%;
+    }
     nav {
       display: flex;
       gap: 1rem;
@@ -98,11 +103,23 @@
       border-radius: 6px;
       border: 1px solid #ccc;
     }
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .matrix-cell {
+      border: 2px solid var(--primary-color);
+      padding: 1rem;
+      min-height: 100px;
+      background: white;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
   <header id="main-header">
-    <h1>ADHD Coach</h1>
+    <h1><img src="Logo.jpg" alt="Logo" class="logo" /> Your ADHD Coach</h1>
     <nav>
       <button onclick="scrollToSection('thought')">Thought</button>
       <button onclick="scrollToSection('chatbox')">Tough Love</button>
@@ -216,11 +233,19 @@
       toggleUI(!!user);
     });
 
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
     function showToughLove() {
       const input = document.getElementById('chatbox-input').value.trim();
       const responses = [
         `You're capable of more. Prove it now.`,
-        `Excuses are boring. Let's get moving.`,
+        `Excuses are boring. Let’s get moving.`,
         `Focus, execute, celebrate. Repeat.`,
         `Less talk, more action.`,
         `Future you is cheering. Don’t let them down.`
@@ -282,14 +307,6 @@
         .catch(() => {
           output.textContent = 'Mistral API error. Please try again.';
         });
-    }
-
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function scrollToSection(id) {
-      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
     }
   </script>
 </body>

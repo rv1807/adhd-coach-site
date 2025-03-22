@@ -77,13 +77,18 @@
       transform: scale(1.03);
     }
 
-    textarea {
+    textarea, input {
       width: 100%;
       height: 100px;
       border: 1px solid #ccc;
       border-radius: 8px;
       padding: 1rem;
       font-size: 1rem;
+    }
+
+    input[type="email"], input[type="password"] {
+      height: auto;
+      margin-bottom: 0.5rem;
     }
 
     .thought-banner, .chatbox-response, .breathing-box {
@@ -102,7 +107,7 @@
       border: none;
     }
 
-    .pomodoro-timer, .eisenhower-matrix, .breathing-exercise, .mistral-ai {
+    .pomodoro-timer, .eisenhower-matrix, .breathing-exercise, .mistral-ai, .user-auth {
       padding: 1.5rem;
     }
 
@@ -136,6 +141,16 @@
   <div class="container">
     <section class="thought-banner">
       <p><em>“Start where you are. Use what you have. Do what you can.”</em></p>
+    </section>
+
+    <section class="user-auth">
+      <h2 class="section-title">User Login</h2>
+      <input id="email" type="email" placeholder="Email">
+      <input id="password" type="password" placeholder="Password">
+      <button onclick="signup()">Sign Up</button>
+      <button onclick="login()">Login</button>
+      <button onclick="logout()">Logout</button>
+      <div id="auth-status"></div>
     </section>
 
     <section class="spotify-playlist">
@@ -181,83 +196,55 @@
     </section>
   </div>
 
-  <script>
-    // Pomodoro Timer
-    let timer;
-    let timeLeft = 25 * 60;
-    function updateDisplay() {
-      const m = Math.floor(timeLeft / 60);
-      const s = timeLeft % 60;
-      document.getElementById('timer-display').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
-    }
-    document.getElementById('start-timer').onclick = () => {
-      if (timer) return;
-      timer = setInterval(() => {
-        if (timeLeft > 0) {
-          timeLeft--;
-          updateDisplay();
-        } else {
-          clearInterval(timer);
-        }
-      }, 1000);
-    };
-    document.getElementById('reset-timer').onclick = () => {
-      clearInterval(timer);
-      timer = null;
-      timeLeft = 25 * 60;
-      updateDisplay();
-    };
-    updateDisplay();
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // Chatbox
-    document.getElementById('chatbox-submit').onclick = () => {
-      const input = document.getElementById('chatbox-input').value;
-      document.getElementById('chatbox-response').textContent = `You got this! Here's your message: "${input}"`;
+    const firebaseConfig = {
+      apiKey: "AIzaSyA92EWgAuKH1lztUeVNHv1fOk9BnFr49pI",
+      authDomain: "adhdcoach-7d295.firebaseapp.com",
+      projectId: "adhdcoach-7d295",
+      storageBucket: "adhdcoach-7d295.firebasestorage.app",
+      messagingSenderId: "70410793890",
+      appId: "1:70410793890:web:c45d72a4dd4026edab38fb",
+      measurementId: "G-EBKRRF4GQN"
     };
 
-    // Breathing Exercise
-    function startBreathing() {
-      const box = document.getElementById('breathing-box');
-      let state = 'Inhale';
-      let cycle = 0;
-      box.textContent = 'Inhale';
-      const breathe = setInterval(() => {
-        if (cycle >= 6) {
-          clearInterval(breathe);
-          box.textContent = 'Well done!';
-        } else {
-          state = state === 'Inhale' ? 'Exhale' : 'Inhale';
-          box.textContent = state;
-          cycle++;
-        }
-      }, 4000);
-    }
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
 
-    // Mistral AI Integration
-    async function askMistral() {
-      const input = document.getElementById('mistral-input').value;
-      const responseDiv = document.getElementById('mistral-response');
-      responseDiv.textContent = 'Thinking...';
-
+    window.signup = async () => {
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('password').value;
       try {
-        const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer YOUR_MISTRAL_API_KEY'
-          },
-          body: JSON.stringify({
-            model: 'mistral-tiny',
-            messages: [{ role: 'user', content: input }]
-          })
-        });
-        const data = await res.json();
-        responseDiv.textContent = data.choices?.[0]?.message?.content || 'No response';
-      } catch (err) {
-        responseDiv.textContent = 'Error contacting Mistral API.';
+        await createUserWithEmailAndPassword(auth, email, pass);
+        document.getElementById('auth-status').textContent = `Signed up as ${email}`;
+      } catch (e) {
+        alert(e.message);
       }
-    }
+    };
+
+    window.login = async () => {
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('password').value;
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        document.getElementById('auth-status').textContent = `Logged in as ${email}`;
+      } catch (e) {
+        alert(e.message);
+      }
+    };
+
+    window.logout = async () => {
+      try {
+        await signOut(auth);
+        document.getElementById('auth-status').textContent = 'Logged out';
+      } catch (e) {
+        alert(e.message);
+      }
+    };
   </script>
 </body>
 </html>
-

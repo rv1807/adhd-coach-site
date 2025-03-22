@@ -14,7 +14,6 @@
       --secondary-color: #e0f2f1;
       --accent-color: #26a69a;
     }
-
     body {
       font-family: var(--font-family);
       margin: 0;
@@ -24,7 +23,6 @@
       line-height: 1.6;
       transition: background 0.3s, color 0.3s;
     }
-
     body.dark {
       --background-gradient: linear-gradient(to bottom right, #1e1e1e, #2d2d2d);
       --text-color: #ffffff;
@@ -32,7 +30,6 @@
       --secondary-color: #37474f;
       --accent-color: #4db6ac;
     }
-
     header {
       text-align: center;
       padding: 2rem 1rem 3rem 1rem;
@@ -40,18 +37,15 @@
       margin-bottom: 2rem;
       position: relative;
     }
-
     header h1 {
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
       color: var(--primary-color);
     }
-
     header p, #navbar-user {
       font-size: 1.2rem;
       margin: 0;
     }
-
     .header-controls {
       position: absolute;
       top: 1rem;
@@ -61,7 +55,6 @@
       gap: 0.5rem;
       align-items: flex-end;
     }
-
     .header-controls button {
       background: var(--accent-color);
       color: white;
@@ -71,7 +64,6 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
-
     .container {
       width: 90%;
       max-width: 1200px;
@@ -81,7 +73,6 @@
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
-
     .section-title {
       font-size: 1.8rem;
       font-weight: 600;
@@ -89,7 +80,6 @@
       color: var(--primary-color);
       text-align: center;
     }
-
     button {
       background: var(--accent-color);
       color: white;
@@ -101,12 +91,10 @@
       transition: all 0.3s ease;
       margin-top: 0.5rem;
     }
-
     button:hover {
       background: #00897b;
       transform: scale(1.03);
     }
-
     textarea, input {
       width: 100%;
       height: 100px;
@@ -115,12 +103,10 @@
       padding: 1rem;
       font-size: 1rem;
     }
-
     input[type="email"], input[type="password"] {
       height: auto;
       margin-bottom: 0.5rem;
     }
-
     .thought-banner, .chatbox-response, .breathing-box {
       background: var(--primary-color);
       color: white;
@@ -129,30 +115,25 @@
       margin: 1.5rem 0;
       text-align: center;
     }
-
     .spotify-playlist iframe {
       width: 100%;
       height: 380px;
       border-radius: 12px;
       border: none;
     }
-
     .pomodoro-timer, .eisenhower-matrix, .breathing-exercise, .mistral-ai, .user-auth, #dashboard {
       padding: 1.5rem;
     }
-
     #timer-display {
       font-size: 2rem;
       color: var(--primary-color);
     }
-
     .matrix-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
       margin-top: 1rem;
     }
-
     .matrix-cell {
       border: 2px solid var(--primary-color);
       padding: 1rem;
@@ -160,7 +141,6 @@
       background: var(--secondary-color);
       border-radius: 8px;
     }
-
     .toast {
       position: fixed;
       bottom: 20px;
@@ -182,7 +162,7 @@
     <h1>Your ADHD Coach</h1>
     <p>Helping you thrive every day</p>
     <p id="navbar-user"></p>
-    <div class="header-controls">
+    <div class="header-controls" id="header-controls">
       <button id="theme-toggle" onclick="toggleTheme()">Use Dark Mode</button>
       <button onclick="logout()">Logout</button>
       <button onclick="switchAccount()">Switch Account</button>
@@ -190,10 +170,6 @@
   </header>
 
   <div class="container">
-    <section class="thought-banner">
-      <p><em>“Start where you are. Use what you have. Do what you can.”</em></p>
-    </section>
-
     <section class="user-auth" id="auth-section">
       <h2 class="section-title">User Login</h2>
       <input id="email" type="email" placeholder="Email">
@@ -205,6 +181,10 @@
     <section id="dashboard" style="display:none;">
       <h2 class="section-title">Welcome to your Dashboard 👋</h2>
       <p>You now have access to your personalized coaching tools!</p>
+    </section>
+
+    <section class="thought-banner">
+      <p><em>“Start where you are. Use what you have. Do what you can.”</em></p>
     </section>
 
     <section class="spotify-playlist">
@@ -252,107 +232,76 @@
 
   <div class="toast" id="toast"></div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyA92EWgAuKH1lztUeVNHv1fOk9BnFr49pI",
       authDomain: "adhdcoach-7d295.firebaseapp.com",
       projectId: "adhdcoach-7d295",
-      storageBucket: "adhdcoach-7d295.firebasestorage.app",
+      storageBucket: "adhdcoach-7d295.appspot.com",
       messagingSenderId: "70410793890",
       appId: "1:70410793890:web:c45d72a4dd4026edab38fb",
       measurementId: "G-EBKRRF4GQN"
     };
-
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
     function showToast(message) {
       const toast = document.getElementById('toast');
       toast.textContent = message;
       toast.style.display = 'block';
-      setTimeout(() => {
-        toast.style.display = 'none';
-      }, 3000);
+      setTimeout(() => toast.style.display = 'none', 3000);
     }
 
-    function updateUI(user) {
-      const loginSection = document.getElementById('auth-section');
-      const dashboard = document.getElementById('dashboard');
-      const navbarUser = document.getElementById('navbar-user');
-
-      if (user) {
-        loginSection.style.display = 'none';
-        dashboard.style.display = 'block';
-        navbarUser.textContent = `👤 Logged in as ${user.email}`;
-      } else {
-        loginSection.style.display = 'block';
-        dashboard.style.display = 'none';
-        navbarUser.textContent = '';
-      }
+    function toggleTheme() {
+      const body = document.body;
+      const btn = document.getElementById('theme-toggle');
+      body.classList.toggle('dark');
+      btn.textContent = body.classList.contains('dark') ? 'Use Light Mode' : 'Use Dark Mode';
     }
 
-    onAuthStateChanged(auth, user => updateUI(user));
-
-    window.signup = async () => {
+    function signup() {
       const email = document.getElementById('email').value;
-      const pass = document.getElementById('password').value;
-      try {
-        await createUserWithEmailAndPassword(auth, email, pass);
-        showToast(`Signed up as ${email}`);
-      } catch (e) {
-        alert(e.message);
-      }
-    };
+      const password = document.getElementById('password').value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(user => showToast(`Signed up as ${email}`))
+        .catch(error => alert(error.message));
+    }
 
-    window.login = async () => {
+    function login() {
       const email = document.getElementById('email').value;
-      const pass = document.getElementById('password').value;
-      try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        showToast(`Logged in as ${email}`);
-      } catch (e) {
-        alert(e.message);
-      }
-    };
+      const password = document.getElementById('password').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(user => showToast(`Logged in as ${email}`))
+        .catch(error => alert(error.message));
+    }
 
-    window.logout = async () => {
-      try {
-        await signOut(auth);
-        showToast("Logged out successfully");
-      } catch (e) {
-        alert(e.message);
-      }
-    };
+    function logout() {
+      auth.signOut().then(() => showToast("Logged out successfully"));
+    }
 
-    window.switchAccount = async () => {
-      await logout();
+    function switchAccount() {
+      logout();
       document.getElementById('email').value = '';
       document.getElementById('password').value = '';
-    };
+    }
 
-    window.toggleTheme = () => {
-      const body = document.body;
-      const toggleBtn = document.getElementById('theme-toggle');
-      body.classList.toggle('dark');
-      toggleBtn.textContent = body.classList.contains('dark') ? 'Use Light Mode' : 'Use Dark Mode';
-    };
+    auth.onAuthStateChanged(user => {
+      document.getElementById('auth-section').style.display = user ? 'none' : 'block';
+      document.getElementById('dashboard').style.display = user ? 'block' : 'none';
+      document.getElementById('navbar-user').textContent = user ? `👤 Logged in as ${user.email}` : '';
+    });
 
-    window.showToughLove = () => {
+    function showToughLove() {
       const input = document.getElementById('chatbox-input').value;
       const response = document.getElementById('chatbox-response');
-      if (input.trim()) {
-        response.textContent = `No excuses! 💪 You said: "${input}" — now make it happen.`;
-      } else {
-        response.textContent = 'Tell me what you want, not what you fear. Type something!';
-      }
-    };
+      response.textContent = input.trim()
+        ? `No excuses! 💪 You said: "${input}" — now make it happen.`
+        : 'Tell me what you want, not what you fear. Type something!';
+    }
 
-    window.startBreathing = () => {
+    function startBreathing() {
       const box = document.getElementById('breathing-box');
       let state = 'Inhale';
       let cycle = 0;
@@ -367,30 +316,31 @@
           cycle++;
         }
       }, 4000);
-    };
+    }
 
-    window.askMistral = async () => {
+    function askMistral() {
       const input = document.getElementById('mistral-input').value;
       const responseDiv = document.getElementById('mistral-response');
       responseDiv.textContent = 'Thinking...';
-      try {
-        const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer YOUR_MISTRAL_API_KEY'
-          },
-          body: JSON.stringify({
-            model: 'mistral-tiny',
-            messages: [{ role: 'user', content: input }]
-          })
+      fetch('https://api.mistral.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer YOUR_MISTRAL_API_KEY'
+        },
+        body: JSON.stringify({
+          model: 'mistral-tiny',
+          messages: [{ role: 'user', content: input }]
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          responseDiv.textContent = data.choices?.[0]?.message?.content || 'No response';
+        })
+        .catch(err => {
+          responseDiv.textContent = 'Error contacting Mistral API.';
         });
-        const data = await res.json();
-        responseDiv.textContent = data.choices?.[0]?.message?.content || 'No response';
-      } catch (err) {
-        responseDiv.textContent = 'Error contacting Mistral API.';
-      }
-    };
+    }
   </script>
 </body>
 </html>

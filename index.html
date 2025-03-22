@@ -185,11 +185,69 @@
     <div class="header-controls">
       <button id="theme-toggle" onclick="toggleTheme()">Use Dark Mode</button>
       <button onclick="logout()">Logout</button>
+      <button onclick="switchAccount()">Switch Account</button>
     </div>
   </header>
 
   <div class="container">
-    <!-- rest of the content remains unchanged -->
+    <section class="thought-banner">
+      <p><em>“Start where you are. Use what you have. Do what you can.”</em></p>
+    </section>
+
+    <section class="user-auth" id="auth-section">
+      <h2 class="section-title">User Login</h2>
+      <input id="email" type="email" placeholder="Email">
+      <input id="password" type="password" placeholder="Password">
+      <button onclick="signup()">Sign Up</button>
+      <button onclick="login()">Login</button>
+    </section>
+
+    <section id="dashboard" style="display:none;">
+      <h2 class="section-title">Welcome to your Dashboard 👋</h2>
+      <p>You now have access to your personalized coaching tools!</p>
+    </section>
+
+    <section class="spotify-playlist">
+      <h2 class="section-title">Relaxing Spotify Playlist</h2>
+      <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DWUvHZA1zLcjW?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </section>
+
+    <section class="chatbox">
+      <h2 class="section-title">Tough Love Chatbox</h2>
+      <textarea id="chatbox-input" placeholder="Ask the chatbot for advice or motivation..."></textarea>
+      <button onclick="showToughLove()">Send</button>
+      <div class="chatbox-response" id="chatbox-response"></div>
+    </section>
+
+    <section class="pomodoro-timer">
+      <h2 class="section-title">Pomodoro Timer</h2>
+      <p id="timer-display">25:00</p>
+      <button id="start-timer">Start</button>
+      <button id="reset-timer">Reset</button>
+    </section>
+
+    <section class="eisenhower-matrix">
+      <h2 class="section-title">Eisenhower Matrix</h2>
+      <div class="matrix-grid">
+        <div class="matrix-cell" contenteditable="true">Urgent & Important</div>
+        <div class="matrix-cell" contenteditable="true">Not Urgent & Important</div>
+        <div class="matrix-cell" contenteditable="true">Urgent & Not Important</div>
+        <div class="matrix-cell" contenteditable="true">Not Urgent & Not Important</div>
+      </div>
+    </section>
+
+    <section class="breathing-exercise">
+      <h2 class="section-title">Breathing Exercise</h2>
+      <div class="breathing-box" id="breathing-box">Click start to begin...</div>
+      <button onclick="startBreathing()">Start</button>
+    </section>
+
+    <section class="mistral-ai">
+      <h2 class="section-title">Organize Your Thoughts</h2>
+      <textarea id="mistral-input" placeholder="Ask a productivity or ADHD question..."></textarea>
+      <button onclick="askMistral()">Submit</button>
+      <div id="mistral-response" class="chatbox-response"></div>
+    </section>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -271,11 +329,67 @@
       }
     };
 
+    window.switchAccount = async () => {
+      await logout();
+      document.getElementById('email').value = '';
+      document.getElementById('password').value = '';
+    };
+
     window.toggleTheme = () => {
       const body = document.body;
       const toggleBtn = document.getElementById('theme-toggle');
       body.classList.toggle('dark');
       toggleBtn.textContent = body.classList.contains('dark') ? 'Use Light Mode' : 'Use Dark Mode';
+    };
+
+    window.showToughLove = () => {
+      const input = document.getElementById('chatbox-input').value;
+      const response = document.getElementById('chatbox-response');
+      if (input.trim()) {
+        response.textContent = `No excuses! 💪 You said: "${input}" — now make it happen.`;
+      } else {
+        response.textContent = 'Tell me what you want, not what you fear. Type something!';
+      }
+    };
+
+    window.startBreathing = () => {
+      const box = document.getElementById('breathing-box');
+      let state = 'Inhale';
+      let cycle = 0;
+      box.textContent = 'Inhale...';
+      const breathe = setInterval(() => {
+        if (cycle >= 6) {
+          clearInterval(breathe);
+          box.textContent = 'Great job breathing 💨';
+        } else {
+          state = state === 'Inhale' ? 'Exhale' : 'Inhale';
+          box.textContent = `${state}...`;
+          cycle++;
+        }
+      }, 4000);
+    };
+
+    window.askMistral = async () => {
+      const input = document.getElementById('mistral-input').value;
+      const responseDiv = document.getElementById('mistral-response');
+      responseDiv.textContent = 'Thinking...';
+      try {
+        const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer YOUR_MISTRAL_API_KEY'
+          },
+          body: JSON.stringify({
+            model: 'mistral-tiny',
+            messages: [{ role: 'user', content: input }]
+          })
+        });
+        const data = await res.json();
+        responseDiv.textContent = data.choices?.[0]?.message?.content || 'No response';
+      } catch (err) {
+        responseDiv.textContent = 'Error contacting Mistral API.';
+      }
     };
   </script>
 </body>

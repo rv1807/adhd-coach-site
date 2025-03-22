@@ -1,77 +1,158 @@
-<!-- FULL UPDATED HTML with GOOGLE SIGN-IN -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Your ADHD Coach</title>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+  <script defer>
+    document.addEventListener("DOMContentLoaded", function () {
+      const firebaseConfig = {
+        apiKey: "AIzaSyA92EWgAuKH1lztUeVNHv1fOk9BnFr49pI",
+        authDomain: "adhdcoach-7d295.firebaseapp.com",
+        projectId: "adhdcoach-7d295",
+        storageBucket: "adhdcoach-7d295.appspot.com",
+        messagingSenderId: "70410793890",
+        appId: "1:70410793890:web:c45d72a4dd4026edab38fb"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      function toggleUI(loggedIn, user) {
+        document.getElementById('auth-section').classList.toggle('hidden', loggedIn);
+        document.getElementById('dashboard').classList.toggle('hidden', !loggedIn);
+        document.getElementById('nav-links').classList.toggle('hidden', !loggedIn);
+        if (user) {
+          document.getElementById('welcome-msg').textContent = `Welcome back, ${user.email} 👋`;
+        }
+      }
+
+      function signup() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        auth.createUserWithEmailAndPassword(email, password)
+          .then(cred => toggleUI(true, cred.user))
+          .catch(err => alert(err.message));
+      }
+
+      function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        auth.signInWithEmailAndPassword(email, password)
+          .then(cred => toggleUI(true, cred.user))
+          .catch(err => alert(err.message));
+      }
+
+      function googleLogin() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider)
+          .then(result => toggleUI(true, result.user))
+          .catch(error => alert(error.message));
+      }
+
+      function logout() {
+        auth.signOut();
+      }
+
+      window.signup = signup;
+      window.login = login;
+      window.googleLogin = googleLogin;
+      window.logout = logout;
+      window.toggleDarkMode = function () {
+        const body = document.body;
+        const toggleBtn = document.getElementById('theme-toggle');
+        const dark = body.classList.toggle('dark');
+        toggleBtn.textContent = dark ? 'Use Light Mode' : 'Use Dark Mode';
+      };
+      window.scrollToSection = function (id) {
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+      };
+      window.showToughLove = function () {
+        const input = document.getElementById('chatbox-input').value.trim();
+        const responses = [
+          `Get moving, champion. Even the best trip over.`,
+          `Perfection is a myth. Progress isn't.`,
+          `Enough of the pity party, time to shine!`,
+          `You’ve got a brain built for brilliance. Let’s go.`,
+          `No one’s coming. It’s you vs. you now.`
+        ];
+        const msg = input ? responses[Math.floor(Math.random() * responses.length)] : 'Try typing something first...';
+        document.getElementById('chatbox-response').textContent = msg;
+      };
+      window.startTimer = function () {
+        if (window.timer) return;
+        window.timer = setInterval(() => {
+          if (window.seconds <= 0) return clearInterval(window.timer);
+          window.seconds--;
+          const m = Math.floor(window.seconds / 60);
+          const s = window.seconds % 60;
+          document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+        }, 1000);
+      };
+      window.resetTimer = function () {
+        clearInterval(window.timer);
+        window.timer = null;
+        window.seconds = 1500;
+        document.getElementById('timer-display').textContent = '25:00';
+      };
+      window.seconds = 1500;
+      window.startBreathing = function () {
+        const box = document.getElementById('breathing-box');
+        let phase = 'Inhale';
+        let count = 0;
+        box.textContent = phase;
+        const cycle = setInterval(() => {
+          if (++count > 6) return clearInterval(cycle);
+          phase = phase === 'Inhale' ? 'Exhale' : 'Inhale';
+          box.textContent = `${phase}...`;
+        }, 4000);
+      };
+      window.askMistral = function () {
+        const input = document.getElementById('mistral-input').value;
+        const output = document.getElementById('mistral-response');
+        output.textContent = 'Thinking...';
+        fetch('https://api.mistral.ai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer YOUR_MISTRAL_API_KEY'
+          },
+          body: JSON.stringify({
+            model: 'mistral-tiny',
+            messages: [{ role: 'user', content: input }]
+          })
+        })
+          .then(res => res.json())
+          .then(data => {
+            output.textContent = data.choices?.[0]?.message?.content || 'No response';
+          })
+          .catch(() => {
+            output.textContent = 'Mistral API error. Please try again.';
+          });
+      };
+
+      auth.onAuthStateChanged(user => {
+        console.log("Auth changed:", user);
+        setTimeout(() => toggleUI(!!user, user), 0);
+      });
+    });
+  </script>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #dff6f0;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #00695c;
-      color: white;
-      padding: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    header h1 {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    header img {
-      height: 40px;
-      border-radius: 50%;
-    }
-    nav {
-      display: flex;
-      gap: 1rem;
-    }
-    nav button {
-      background: #26a69a;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .hidden { display: none; }
-    .auth-box {
-      max-width: 400px;
-      margin: 4rem auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .auth-box input {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .auth-box button {
-      padding: 0.5rem 1rem;
-      margin: 0.25rem;
-    }
-    #dashboard { padding: 2rem; }
-    section { margin-bottom: 2rem; background: white; padding: 1rem; border-radius: 10px; }
-    .chatbox-response, #mistral-response { margin-top: 1rem; background: #e0f2f1; padding: 1rem; border-radius: 6px; }
-    textarea { width: 100%; height: 100px; padding: 1rem; border-radius: 6px; resize: none; border: 1px solid #ccc; }
+    body { font-family: Arial, sans-serif; background: #def3ee; margin: 0; }
+    header { background: #00695c; color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    nav.hidden, .hidden { display: none; }
+    nav button { margin: 0 0.3rem; padding: 0.4rem 0.8rem; background: #009688; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .auth-box { max-width: 400px; margin: 4rem auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .auth-box input, .auth-box button { width: 100%; padding: 0.7rem; margin-bottom: 0.7rem; }
+    section { background: white; padding: 1rem; margin: 1rem auto; max-width: 700px; border-radius: 10px; box-shadow: 0 0 6px rgba(0,0,0,0.1); }
+    textarea { width: 100%; height: 100px; resize: none; padding: 1rem; border: 1px solid #ccc; border-radius: 6px; }
+    .chatbox-response, #mistral-response { margin-top: 1rem; background: #f1f8f6; padding: 1rem; border-radius: 6px; }
   </style>
 </head>
 <body>
   <header>
-    <h1><img src="Logo.jpg" alt="Logo"> Your ADHD Coach</h1>
+    <h1>🧭 Your ADHD Coach</h1>
     <nav id="nav-links" class="hidden">
       <button onclick="scrollToSection('thought')">Thought</button>
       <button onclick="scrollToSection('chatbox')">Tough Love</button>
@@ -90,30 +171,29 @@
     <input id="password" type="password" placeholder="Password">
     <button onclick="signup()">Sign Up</button>
     <button onclick="login()">Login</button>
-    <hr>
     <button onclick="googleLogin()">Sign in with Google</button>
   </div>
 
   <div id="dashboard" class="hidden">
-    <div id="welcome-msg"></div>
+    <h2 id="welcome-msg"></h2>
     <section id="thought">
-      <h2>Thought of the Day</h2>
+      <h3>🌞 Thought of the Day</h3>
       <p><em>"Start where you are. Use what you have. Do what you can."</em></p>
     </section>
     <section id="chatbox">
-      <h2>Tough Love Chatbot</h2>
+      <h3>🔥 Tough Love Chatbox</h3>
       <textarea id="chatbox-input" placeholder="Tell me your excuse..."></textarea>
       <button onclick="showToughLove()">Roast Me</button>
       <div id="chatbox-response" class="chatbox-response"></div>
     </section>
     <section id="pomodoro">
-      <h2>Pomodoro Timer</h2>
+      <h3>⏳ Pomodoro Timer</h3>
       <p id="timer-display">25:00</p>
       <button onclick="startTimer()">Start</button>
       <button onclick="resetTimer()">Reset</button>
     </section>
     <section id="matrix">
-      <h2>Eisenhower Matrix</h2>
+      <h3>🧮 Eisenhower Matrix</h3>
       <div class="matrix-grid">
         <div class="matrix-cell" contenteditable="true">Urgent & Important</div>
         <div class="matrix-cell" contenteditable="true">Not Urgent & Important</div>
@@ -122,149 +202,16 @@
       </div>
     </section>
     <section id="breathing">
-      <h2>Breathing Exercise</h2>
+      <h3>💨 Breathing Box</h3>
       <div id="breathing-box">Click start to begin...</div>
       <button onclick="startBreathing()">Start</button>
     </section>
     <section id="ai">
-      <h2>Organize Your Thoughts</h2>
+      <h3>🧠 Organize Your Thoughts</h3>
       <textarea id="mistral-input" placeholder="What's holding you back?"></textarea>
       <button onclick="askMistral()">Break It Down</button>
       <div id="mistral-response"></div>
     </section>
   </div>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyA92EWgAuKH1lztUeVNHv1fOk9BnFr49pI",
-      authDomain: "adhdcoach-7d295.firebaseapp.com",
-      projectId: "adhdcoach-7d295",
-      storageBucket: "adhdcoach-7d295.appspot.com",
-      messagingSenderId: "70410793890",
-      appId: "1:70410793890:web:c45d72a4dd4026edab38fb"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    function toggleUI(loggedIn, user) {
-      document.getElementById('auth-section').classList.toggle('hidden', loggedIn);
-      document.getElementById('dashboard').classList.toggle('hidden', !loggedIn);
-      document.getElementById('nav-links').classList.toggle('hidden', !loggedIn);
-      if (user) {
-        document.getElementById('welcome-msg').textContent = `Welcome back, ${user.email} 👋`;
-      }
-    }
-
-    function signup() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(cred => toggleUI(true, cred.user))
-        .catch(err => alert(err.message));
-    }
-
-    function login() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      auth.signInWithEmailAndPassword(email, password)
-        .then(cred => toggleUI(true, cred.user))
-        .catch(err => alert(err.message));
-    }
-
-    function googleLogin() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then(result => toggleUI(true, result.user))
-        .catch(error => alert(error.message));
-    }
-
-    function logout() {
-      auth.signOut();
-    }
-
-    auth.onAuthStateChanged(user => {
-      console.log("Auth changed:", user);
-      setTimeout(() => toggleUI(!!user, user), 0);
-    });
-
-    function scrollToSection(id) {
-      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function toggleDarkMode() {
-      const body = document.body;
-      const toggleBtn = document.getElementById('theme-toggle');
-      const dark = body.classList.toggle('dark');
-      toggleBtn.textContent = dark ? 'Use Light Mode' : 'Use Dark Mode';
-    }
-
-    function showToughLove() {
-      const input = document.getElementById('chatbox-input').value.trim();
-      const responses = [
-        `Get moving, champion. Even the best trip over.`,
-        `Perfection is a myth. Progress isn't.`,
-        `Enough of the pity party, time to shine!`,
-        `You’ve got a brain built for brilliance. Let’s go.`,
-        `No one’s coming. It’s you vs. you now.`
-      ];
-      const msg = input ? responses[Math.floor(Math.random() * responses.length)] : 'Try typing something first...';
-      document.getElementById('chatbox-response').textContent = msg;
-    }
-
-    let timer;
-    let seconds = 1500;
-    function startTimer() {
-      if (timer) return;
-      timer = setInterval(() => {
-        if (seconds <= 0) return clearInterval(timer);
-        seconds--;
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2, '0')}`;
-      }, 1000);
-    }
-    function resetTimer() {
-      clearInterval(timer);
-      timer = null;
-      seconds = 1500;
-      document.getElementById('timer-display').textContent = '25:00';
-    }
-
-    function startBreathing() {
-      const box = document.getElementById('breathing-box');
-      let phase = 'Inhale';
-      let count = 0;
-      box.textContent = phase;
-      const cycle = setInterval(() => {
-        if (++count > 6) return clearInterval(cycle);
-        phase = phase === 'Inhale' ? 'Exhale' : 'Inhale';
-        box.textContent = `${phase}...`;
-      }, 4000);
-    }
-
-    function askMistral() {
-      const input = document.getElementById('mistral-input').value;
-      const output = document.getElementById('mistral-response');
-      output.textContent = 'Thinking...';
-      fetch('https://api.mistral.ai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer YOUR_MISTRAL_API_KEY'
-        },
-        body: JSON.stringify({
-          model: 'mistral-tiny',
-          messages: [{ role: 'user', content: input }]
-        })
-      })
-        .then(res => res.json())
-        .then(data => {
-          output.textContent = data.choices?.[0]?.message?.content || 'No response';
-        })
-        .catch(() => {
-          output.textContent = 'Mistral API error. Please try again.';
-        });
-    }
-  </script>
 </body>
 </html>

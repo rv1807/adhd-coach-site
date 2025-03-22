@@ -22,6 +22,15 @@
       background: var(--background-gradient);
       color: var(--text-color);
       line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      --background-gradient: linear-gradient(to bottom right, #1e1e1e, #2d2d2d);
+      --text-color: #ffffff;
+      --primary-color: #80cbc4;
+      --secondary-color: #37474f;
+      --accent-color: #4db6ac;
     }
 
     header {
@@ -29,6 +38,7 @@
       padding: 2rem 1rem;
       background: rgba(255, 255, 255, 0.85);
       margin-bottom: 2rem;
+      position: relative;
     }
 
     header h1 {
@@ -37,9 +47,21 @@
       color: var(--primary-color);
     }
 
-    header p {
+    header p, #navbar-user {
       font-size: 1.2rem;
       margin: 0;
+    }
+
+    #theme-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
     }
 
     .container {
@@ -107,7 +129,7 @@
       border: none;
     }
 
-    .pomodoro-timer, .eisenhower-matrix, .breathing-exercise, .mistral-ai, .user-auth {
+    .pomodoro-timer, .eisenhower-matrix, .breathing-exercise, .mistral-ai, .user-auth, #dashboard {
       padding: 1.5rem;
     }
 
@@ -151,6 +173,8 @@
   <header>
     <h1>Your ADHD Coach</h1>
     <p>Helping you thrive every day</p>
+    <p id="navbar-user"></p>
+    <button id="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
   </header>
 
   <div class="container">
@@ -168,9 +192,9 @@
       <div id="auth-status"></div>
     </section>
 
-    <section id="welcome-section" class="thought-banner" style="display:none;">
-      <h2>Welcome back 👋</h2>
-      <p id="welcome-message"></p>
+    <section id="dashboard" style="display:none;">
+      <h2 class="section-title">Welcome to your Dashboard 👋</h2>
+      <p>You now have access to your personalized coaching tools!</p>
     </section>
 
     <section class="spotify-playlist">
@@ -248,17 +272,17 @@
 
     function updateUI(user) {
       const loginSection = document.getElementById('auth-section');
-      const welcomeSection = document.getElementById('welcome-section');
-      const welcomeMsg = document.getElementById('welcome-message');
+      const dashboard = document.getElementById('dashboard');
+      const navbarUser = document.getElementById('navbar-user');
 
       if (user) {
         loginSection.style.display = 'none';
-        welcomeSection.style.display = 'block';
-        welcomeMsg.textContent = `Hello, ${user.email}`;
+        dashboard.style.display = 'block';
+        navbarUser.textContent = `👤 Logged in as ${user.email}`;
       } else {
         loginSection.style.display = 'block';
-        welcomeSection.style.display = 'none';
-        welcomeMsg.textContent = '';
+        dashboard.style.display = 'none';
+        navbarUser.textContent = '';
       }
     }
 
@@ -293,6 +317,10 @@
       } catch (e) {
         alert(e.message);
       }
+    };
+
+    window.toggleTheme = () => {
+      document.body.classList.toggle('dark');
     };
   </script>
 </body>

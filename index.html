@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ADHD Coach Website</title>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADHD Coach Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     :root {
       --font-family: 'Quicksand', sans-serif;
@@ -21,193 +21,131 @@
       background: var(--background-gradient);
       color: var(--text-color);
       line-height: 1.6;
-      transition: background 0.3s, color 0.3s;
     }
-    body.dark {
-      --background-gradient: linear-gradient(to bottom right, #1e1e1e, #2d2d2d);
-      --text-color: #ffffff;
-      --primary-color: #80cbc4;
-      --secondary-color: #37474f;
-      --accent-color: #4db6ac;
-    }
+    .hidden { display: none; }
     header {
-      text-align: center;
-      padding: 2rem 1rem 3rem 1rem;
-      background: rgba(255, 255, 255, 0.85);
-      margin-bottom: 2rem;
-      position: relative;
-    }
-    header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-      color: var(--primary-color);
-    }
-    header p, #navbar-user {
-      font-size: 1.2rem;
-      margin: 0;
-    }
-    .header-controls {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 999;
+      padding: 1rem;
       display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      align-items: flex-end;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .header-controls button {
+    header h1 { margin: 0; color: var(--primary-color); }
+    nav {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    nav button {
       background: var(--accent-color);
-      color: white;
       border: none;
+      color: white;
       padding: 0.5rem 1rem;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 0.9rem;
     }
-    .container {
-      width: 90%;
-      max-width: 1200px;
-      margin: auto;
-      padding: 2rem 0;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
-    .section-title {
-      font-size: 1.8rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      color: var(--primary-color);
-      text-align: center;
-    }
-    button {
-      background: var(--accent-color);
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 0.5rem;
-    }
-    button:hover {
-      background: #00897b;
-      transform: scale(1.03);
-    }
-    textarea, input {
-      width: 100%;
-      height: 100px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+    .container { max-width: 1000px; margin: 2rem auto; padding: 1rem; }
+    section {
+      margin-bottom: 3rem;
       padding: 1rem;
-      font-size: 1rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      position: relative;
     }
-    input[type="email"], input[type="password"] {
-      height: auto;
-      margin-bottom: 0.5rem;
-    }
-    .thought-banner, .chatbox-response, .breathing-box {
+    section .top-link {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
       background: var(--primary-color);
       color: white;
-      padding: 1.25rem;
-      border-radius: 10px;
-      margin: 1.5rem 0;
-      text-align: center;
-    }
-    .spotify-playlist iframe {
-      width: 100%;
-      height: 380px;
-      border-radius: 12px;
       border: none;
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      cursor: pointer;
     }
-    .pomodoro-timer, .eisenhower-matrix, .breathing-exercise, .mistral-ai, .user-auth, #dashboard {
-      padding: 1.5rem;
-    }
-    #timer-display {
-      font-size: 2rem;
-      color: var(--primary-color);
-    }
-    .matrix-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .matrix-cell {
-      border: 2px solid var(--primary-color);
+    textarea {
+      width: 100%;
       padding: 1rem;
-      min-height: 100px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .chatbox-response {
       background: var(--secondary-color);
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 6px;
+    }
+    .auth-box {
+      max-width: 400px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       border-radius: 8px;
     }
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #00796b;
-      color: white;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      font-size: 1rem;
-      z-index: 9999;
-      display: none;
+    .auth-box input {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Your ADHD Coach</h1>
-    <p>Helping you thrive every day</p>
-    <p id="navbar-user"></p>
-    <div class="header-controls" id="header-controls">
-      <button id="theme-toggle" onclick="toggleTheme()">Use Dark Mode</button>
+    <h1>ADHD Coach</h1>
+    <nav>
+      <button onclick="scrollToSection('thought')">Thought</button>
+      <button onclick="scrollToSection('chatbox')">Tough Love</button>
+      <button onclick="scrollToSection('pomodoro')">Pomodoro</button>
+      <button onclick="scrollToSection('matrix')">Matrix</button>
+      <button onclick="scrollToSection('breathing')">Breathe</button>
+      <button onclick="scrollToSection('ai')">Organize</button>
       <button onclick="logout()">Logout</button>
-      <button onclick="switchAccount()">Switch Account</button>
-    </div>
+    </nav>
   </header>
 
-  <div class="container">
-    <section class="user-auth" id="auth-section">
-      <h2 class="section-title">User Login</h2>
-      <input id="email" type="email" placeholder="Email">
-      <input id="password" type="password" placeholder="Password">
-      <button onclick="signup()">Sign Up</button>
-      <button onclick="login()">Login</button>
+  <div id="auth-section" class="auth-box">
+    <h2>Login</h2>
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="dashboard" class="container hidden">
+    <section id="thought">
+      <button class="top-link" onclick="scrollToTop()">Top ↑</button>
+      <h2>Thought of the Day</h2>
+      <p><em>"You're not lazy. Your brain just works differently—and that's okay."</em></p>
     </section>
 
-    <section id="dashboard" style="display:none;">
-      <h2 class="section-title">Welcome to your Dashboard 👋</h2>
-      <p>You now have access to your personalized coaching tools!</p>
+    <section id="chatbox">
+      <button class="top-link" onclick="scrollToTop()">Top ↑</button>
+      <h2>Tough Love Chatbox</h2>
+      <textarea id="chatbox-input" placeholder="Tell me your excuse..."></textarea>
+      <button onclick="showToughLove()">Roast Me</button>
+      <div id="chatbox-response" class="chatbox-response"></div>
     </section>
 
-    <section class="thought-banner">
-      <p><em>“Start where you are. Use what you have. Do what you can.”</em></p>
-    </section>
-
-    <section class="spotify-playlist">
-      <h2 class="section-title">Relaxing Spotify Playlist</h2>
-      <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DWUvHZA1zLcjW?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </section>
-
-    <section class="chatbox">
-      <h2 class="section-title">Tough Love Chatbox</h2>
-      <textarea id="chatbox-input" placeholder="Ask the chatbot for advice or motivation..."></textarea>
-      <button onclick="showToughLove()">Send</button>
-      <div class="chatbox-response" id="chatbox-response"></div>
-    </section>
-
-    <section class="pomodoro-timer">
-      <h2 class="section-title">Pomodoro Timer</h2>
+    <section id="pomodoro">
+      <button class="top-link" onclick="scrollToTop()">Top ↑</button>
+      <h2>Pomodoro Timer</h2>
       <p id="timer-display">25:00</p>
-      <button id="start-timer">Start</button>
-      <button id="reset-timer">Reset</button>
+      <button onclick="startTimer()">Start</button>
+      <button onclick="resetTimer()">Reset</button>
     </section>
 
-    <section class="eisenhower-matrix">
-      <h2 class="section-title">Eisenhower Matrix</h2>
+    <section id="matrix">
+      <button class="top-link" onclick="scrollToTop()">Top ↑</button>
+      <h2>Eisenhower Matrix</h2>
       <div class="matrix-grid">
         <div class="matrix-cell" contenteditable="true">Urgent & Important</div>
         <div class="matrix-cell" contenteditable="true">Not Urgent & Important</div>
@@ -216,21 +154,21 @@
       </div>
     </section>
 
-    <section class="breathing-exercise">
-      <h2 class="section-title">Breathing Exercise</h2>
-      <div class="breathing-box" id="breathing-box">Click start to begin...</div>
+    <section id="breathing">
+      <button class="top-link" onclick="scrollToTop()">Top ↑</button>
+      <h2>Breathing Exercise</h2>
+      <div id="breathing-box">Click start to begin...</div>
       <button onclick="startBreathing()">Start</button>
     </section>
 
-    <section class="mistral-ai">
-      <h2 class="section-title">Organize Your Thoughts</h2>
-      <textarea id="mistral-input" placeholder="Ask a productivity or ADHD question..."></textarea>
+    <section id="ai">
+      <button class="top-link" onclick="scrollToTop()">Top ↑</button>
+      <h2>Organize Your Thoughts</h2>
+      <textarea id="mistral-input" placeholder="Ask your question..."></textarea>
       <button onclick="askMistral()">Submit</button>
       <div id="mistral-response" class="chatbox-response"></div>
     </section>
   </div>
-
-  <div class="toast" id="toast"></div>
 
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
@@ -241,87 +179,80 @@
       projectId: "adhdcoach-7d295",
       storageBucket: "adhdcoach-7d295.appspot.com",
       messagingSenderId: "70410793890",
-      appId: "1:70410793890:web:c45d72a4dd4026edab38fb",
-      measurementId: "G-EBKRRF4GQN"
+      appId: "1:70410793890:web:c45d72a4dd4026edab38fb"
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.style.display = 'block';
-      setTimeout(() => toast.style.display = 'none', 3000);
-    }
-
-    function toggleTheme() {
-      const body = document.body;
-      const btn = document.getElementById('theme-toggle');
-      body.classList.toggle('dark');
-      btn.textContent = body.classList.contains('dark') ? 'Use Light Mode' : 'Use Dark Mode';
-    }
-
     function signup() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(user => showToast(`Signed up as ${email}`))
-        .catch(error => alert(error.message));
+      auth.createUserWithEmailAndPassword(email, password).catch(err => alert(err.message));
     }
 
     function login() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      auth.signInWithEmailAndPassword(email, password)
-        .then(user => showToast(`Logged in as ${email}`))
-        .catch(error => alert(error.message));
+      auth.signInWithEmailAndPassword(email, password).catch(err => alert(err.message));
     }
 
     function logout() {
-      auth.signOut().then(() => showToast("Logged out successfully"));
-    }
-
-    function switchAccount() {
-      logout();
-      document.getElementById('email').value = '';
-      document.getElementById('password').value = '';
+      auth.signOut();
     }
 
     auth.onAuthStateChanged(user => {
-      document.getElementById('auth-section').style.display = user ? 'none' : 'block';
-      document.getElementById('dashboard').style.display = user ? 'block' : 'none';
-      document.getElementById('navbar-user').textContent = user ? `👤 Logged in as ${user.email}` : '';
+      document.getElementById('auth-section').classList.toggle('hidden', !!user);
+      document.getElementById('dashboard').classList.toggle('hidden', !user);
     });
 
     function showToughLove() {
-      const input = document.getElementById('chatbox-input').value;
-      const response = document.getElementById('chatbox-response');
-      response.textContent = input.trim()
-        ? `No excuses! 💪 You said: "${input}" — now make it happen.`
-        : 'Tell me what you want, not what you fear. Type something!';
+      const input = document.getElementById('chatbox-input').value.trim();
+      const responses = [
+        `You're capable of more. Prove it now.`,
+        `Excuses are boring. Let's get moving.`,
+        `Focus, execute, celebrate. Repeat.`,
+        `Less talk, more action.`,
+        `Future you is cheering. Don't let them down.`
+      ];
+      const msg = input ? responses[Math.floor(Math.random() * responses.length)] : 'Try writing something first...';
+      document.getElementById('chatbox-response').textContent = msg;
+    }
+
+    let timer;
+    let seconds = 1500;
+    function startTimer() {
+      if (timer) return;
+      timer = setInterval(() => {
+        if (seconds <= 0) return clearInterval(timer);
+        seconds--;
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+    function resetTimer() {
+      clearInterval(timer);
+      timer = null;
+      seconds = 1500;
+      document.getElementById('timer-display').textContent = '25:00';
     }
 
     function startBreathing() {
       const box = document.getElementById('breathing-box');
-      let state = 'Inhale';
-      let cycle = 0;
-      box.textContent = 'Inhale...';
-      const breathe = setInterval(() => {
-        if (cycle >= 6) {
-          clearInterval(breathe);
-          box.textContent = 'Great job breathing 💨';
-        } else {
-          state = state === 'Inhale' ? 'Exhale' : 'Inhale';
-          box.textContent = `${state}...`;
-          cycle++;
-        }
+      let phase = 'Inhale';
+      let count = 0;
+      box.textContent = phase;
+      const cycle = setInterval(() => {
+        if (++count > 6) return clearInterval(cycle);
+        phase = phase === 'Inhale' ? 'Exhale' : 'Inhale';
+        box.textContent = `${phase}...`;
       }, 4000);
     }
 
     function askMistral() {
       const input = document.getElementById('mistral-input').value;
-      const responseDiv = document.getElementById('mistral-response');
-      responseDiv.textContent = 'Thinking...';
+      const output = document.getElementById('mistral-response');
+      output.textContent = 'Thinking...';
       fetch('https://api.mistral.ai/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -335,11 +266,19 @@
       })
         .then(res => res.json())
         .then(data => {
-          responseDiv.textContent = data.choices?.[0]?.message?.content || 'No response';
+          output.textContent = data.choices?.[0]?.message?.content || 'No response';
         })
-        .catch(err => {
-          responseDiv.textContent = 'Error contacting Mistral API.';
+        .catch(() => {
+          output.textContent = 'Mistral API error. Please try again.';
         });
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
     }
   </script>
 </body>

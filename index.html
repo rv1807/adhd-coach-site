@@ -29,11 +29,12 @@
       background: rgba(255, 255, 255, 0.95);
       z-index: 999;
       padding: 1rem;
-      display: flex;
+      display: none;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    header.active { display: flex; }
     header h1 { margin: 0; color: var(--primary-color); }
     nav {
       display: flex;
@@ -74,6 +75,7 @@
       padding: 1rem;
       border-radius: 6px;
       border: 1px solid #ccc;
+      resize: none;
     }
     .chatbox-response {
       background: var(--secondary-color);
@@ -99,7 +101,7 @@
   </style>
 </head>
 <body>
-  <header>
+  <header id="main-header">
     <h1>ADHD Coach</h1>
     <nav>
       <button onclick="scrollToSection('thought')">Thought</button>
@@ -201,8 +203,18 @@
     }
 
     auth.onAuthStateChanged(user => {
-      document.getElementById('auth-section').classList.toggle('hidden', !!user);
-      document.getElementById('dashboard').classList.toggle('hidden', !user);
+      const authSection = document.getElementById('auth-section');
+      const dashboard = document.getElementById('dashboard');
+      const header = document.getElementById('main-header');
+      if (user) {
+        authSection.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+        header.classList.add('active');
+      } else {
+        authSection.classList.remove('hidden');
+        dashboard.classList.add('hidden');
+        header.classList.remove('active');
+      }
     });
 
     function showToughLove() {

@@ -143,7 +143,7 @@
       <p><em>“Start where you are. Use what you have. Do what you can.”</em></p>
     </section>
 
-    <section class="user-auth">
+    <section class="user-auth" id="auth-section">
       <h2 class="section-title">User Login</h2>
       <input id="email" type="email" placeholder="Email">
       <input id="password" type="password" placeholder="Password">
@@ -151,6 +151,11 @@
       <button onclick="login()">Login</button>
       <button onclick="logout()">Logout</button>
       <div id="auth-status"></div>
+    </section>
+
+    <section id="welcome-section" class="thought-banner" style="display:none;">
+      <h2>Welcome back 👋</h2>
+      <p id="welcome-message"></p>
     </section>
 
     <section class="spotify-playlist">
@@ -199,7 +204,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyA92EWgAuKH1lztUeVNHv1fOk9BnFr49pI",
@@ -215,12 +220,29 @@
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
 
+    function updateUI(user) {
+      const loginSection = document.getElementById('auth-section');
+      const welcomeSection = document.getElementById('welcome-section');
+      const welcomeMsg = document.getElementById('welcome-message');
+
+      if (user) {
+        loginSection.style.display = 'none';
+        welcomeSection.style.display = 'block';
+        welcomeMsg.textContent = `Hello, ${user.email}`;
+      } else {
+        loginSection.style.display = 'block';
+        welcomeSection.style.display = 'none';
+        welcomeMsg.textContent = '';
+      }
+    }
+
+    onAuthStateChanged(auth, user => updateUI(user));
+
     window.signup = async () => {
       const email = document.getElementById('email').value;
       const pass = document.getElementById('password').value;
       try {
         await createUserWithEmailAndPassword(auth, email, pass);
-        document.getElementById('auth-status').textContent = `Signed up as ${email}`;
       } catch (e) {
         alert(e.message);
       }
@@ -231,7 +253,6 @@
       const pass = document.getElementById('password').value;
       try {
         await signInWithEmailAndPassword(auth, email, pass);
-        document.getElementById('auth-status').textContent = `Logged in as ${email}`;
       } catch (e) {
         alert(e.message);
       }
@@ -240,7 +261,6 @@
     window.logout = async () => {
       try {
         await signOut(auth);
-        document.getElementById('auth-status').textContent = 'Logged out';
       } catch (e) {
         alert(e.message);
       }

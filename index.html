@@ -186,16 +186,26 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    function toggleUI(loggedIn) {
+      document.getElementById('auth-section').classList.toggle('hidden', loggedIn);
+      document.getElementById('dashboard').classList.toggle('hidden', !loggedIn);
+      document.getElementById('main-header').classList.toggle('active', loggedIn);
+    }
+
     function signup() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      auth.createUserWithEmailAndPassword(email, password).catch(err => alert(err.message));
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => toggleUI(true))
+        .catch(err => alert(err.message));
     }
 
     function login() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      auth.signInWithEmailAndPassword(email, password).catch(err => alert(err.message));
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => toggleUI(true))
+        .catch(err => alert(err.message));
     }
 
     function logout() {
@@ -203,18 +213,7 @@
     }
 
     auth.onAuthStateChanged(user => {
-      const authSection = document.getElementById('auth-section');
-      const dashboard = document.getElementById('dashboard');
-      const header = document.getElementById('main-header');
-      if (user) {
-        authSection.classList.add('hidden');
-        dashboard.classList.remove('hidden');
-        header.classList.add('active');
-      } else {
-        authSection.classList.remove('hidden');
-        dashboard.classList.add('hidden');
-        header.classList.remove('active');
-      }
+      toggleUI(!!user);
     });
 
     function showToughLove() {
@@ -224,7 +223,7 @@
         `Excuses are boring. Let's get moving.`,
         `Focus, execute, celebrate. Repeat.`,
         `Less talk, more action.`,
-        `Future you is cheering. Don't let them down.`
+        `Future you is cheering. Don’t let them down.`
       ];
       const msg = input ? responses[Math.floor(Math.random() * responses.length)] : 'Try writing something first...';
       document.getElementById('chatbox-response').textContent = msg;

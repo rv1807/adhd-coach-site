@@ -130,6 +130,21 @@
       background: var(--secondary-color);
       border-radius: 8px;
     }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #00796b;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      font-size: 1rem;
+      z-index: 9999;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -201,6 +216,8 @@
     </section>
   </div>
 
+  <div class="toast" id="toast"></div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
@@ -219,6 +236,15 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
 
     function updateUI(user) {
       const loginSection = document.getElementById('auth-section');
@@ -243,6 +269,7 @@
       const pass = document.getElementById('password').value;
       try {
         await createUserWithEmailAndPassword(auth, email, pass);
+        showToast(`Signed up as ${email}`);
       } catch (e) {
         alert(e.message);
       }
@@ -253,6 +280,7 @@
       const pass = document.getElementById('password').value;
       try {
         await signInWithEmailAndPassword(auth, email, pass);
+        showToast(`Logged in as ${email}`);
       } catch (e) {
         alert(e.message);
       }
@@ -261,6 +289,7 @@
     window.logout = async () => {
       try {
         await signOut(auth);
+        showToast("Logged out successfully");
       } catch (e) {
         alert(e.message);
       }

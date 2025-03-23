@@ -274,16 +274,17 @@
       });
     }
 
-    function fetchQuoteOfTheDay() {
+  function fetchQuoteOfTheDay() {
   fetch("https://zenquotes.io/api/random")
     .then(res => res.json())
     .then(data => {
+      console.log("ZenQuote API response:", data); // ✅ Debug line
       const quote = data[0].q;
       const author = data[0].a;
       displayQuote(quote, author);
     })
     .catch(error => {
-      console.error("Error fetching quote:", error);
+      console.error("Error fetching quote:", error); // ✅ Debug error
       displayQuote("Start where you are. Use what you have. Do what you can.", "Arthur Ashe");
     });
 }

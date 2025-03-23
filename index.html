@@ -301,19 +301,23 @@ textarea {
     }
 
 function fetchQuoteOfTheDay() {
+  console.log("Fetching local quotes...");  // 🟡 Step 1: Check if this logs
   fetch('quotes.json')
-    .then(res => res.json())
+    .then(res => {
+      console.log("Response status:", res.status);  // 🟡 Step 2: Check if response is OK
+      return res.json();
+    })
     .then(data => {
+      console.log("Quotes loaded successfully:", data);  // 🟢 Step 3: See full data
       const randomIndex = Math.floor(Math.random() * data.length);
       const { quote, author } = data[randomIndex];
       displayQuote(quote, author);
     })
     .catch(error => {
-      console.error("Error fetching local quote:", error);
+      console.error("❌ Error fetching local quote:", error);
       displayQuote("Start where you are. Use what you have. Do what you can.", "Arthur Ashe");
     });
 }
-
 function displayQuote(quote, author) {
   const quoteElement = document.getElementById('quote-text');
   const authorElement = document.getElementById('quote-author');

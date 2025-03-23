@@ -305,7 +305,7 @@ function updateClock() {
   const progressCircle = document.querySelector("circle.progress");
   const circumference = 2 * Math.PI * 45;
   const offset = (elapsedSeconds / totalSeconds) * circumference;
-  progressCircle.style.strokeDashoffset = offset;
+  progressCircle.style.strokeDashoffset = circumference - offset;
 }
 
 function startPomodoro() {

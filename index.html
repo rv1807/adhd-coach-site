@@ -264,18 +264,18 @@ textarea {
       document.getElementById('timer-display').textContent = '25:00';
     }
 
-    let breathingInterval = null; // This will store our interval
+ let breathingInterval = null;
+let breathingPaused = false;
 
 function startBreathing() {
+  breathingPaused = false; // Reset pause state
   const box = document.getElementById("breathing-box");
   let phase = "Inhale";
   let count = 0;
+
   box.textContent = phase;
 
-  // Stop any running breathing cycle first
-  clearInterval(breathingInterval);
-
-  // Start new interval and store it
+  clearInterval(breathingInterval); // Clear any existing interval
   breathingInterval = setInterval(() => {
     if (++count > 6) {
       clearInterval(breathingInterval);
@@ -287,10 +287,19 @@ function startBreathing() {
   }, 4000);
 }
 
+
 function stopBreathing() {
-  clearInterval(breathingInterval); // Stop the breathing cycle
-  breathingInterval = null;         // Reset the tracker
-  document.getElementById("breathing-box").textContent = "Paused. Click start to resume...";
+  const box = document.getElementById("breathing-box");
+
+  if (!breathingPaused) {
+    clearInterval(breathingInterval);
+    breathingInterval = null;
+    box.textContent = "Paused. Click stop again to reset.";
+    breathingPaused = true;
+  } else {
+    box.textContent = "Click start to begin...";
+    breathingPaused = false;
+  }
 }
     
     function askMistral() {

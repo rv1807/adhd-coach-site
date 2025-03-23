@@ -276,7 +276,7 @@
 
 function fetchQuoteOfTheDay() {
   const url = 'https://zenquotes.io/api/random';
-  const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+  const proxyUrl = 'https://api.allorigins.win/get?disableCache=true&url=' + encodeURIComponent(url);
 
   fetch(proxyUrl)
     .then(res => res.json())

@@ -264,18 +264,35 @@ textarea {
       document.getElementById('timer-display').textContent = '25:00';
     }
 
-    function startBreathing() {
-      const box = document.getElementById("breathing-box");
-      let phase = "Inhale";
-      let count = 0;
-      box.textContent = phase;
-      const cycle = setInterval(() => {
-        if (++count > 6) return clearInterval(cycle);
-        phase = phase === "Inhale" ? "Exhale" : "Inhale";
-        box.textContent = `${phase}...`;
-      }, 4000);
-    }
+    let breathingInterval = null; // This will store our interval
 
+function startBreathing() {
+  const box = document.getElementById("breathing-box");
+  let phase = "Inhale";
+  let count = 0;
+  box.textContent = phase;
+
+  // Stop any running breathing cycle first
+  clearInterval(breathingInterval);
+
+  // Start new interval and store it
+  breathingInterval = setInterval(() => {
+    if (++count > 6) {
+      clearInterval(breathingInterval);
+      breathingInterval = null;
+      return;
+    }
+    phase = phase === "Inhale" ? "Exhale" : "Inhale";
+    box.textContent = `${phase}...`;
+  }, 4000);
+}
+
+function stopBreathing() {
+  clearInterval(breathingInterval); // Stop the breathing cycle
+  breathingInterval = null;         // Reset the tracker
+  document.getElementById("breathing-box").textContent = "Paused. Click start to resume...";
+}
+    
     function askMistral() {
       const input = document.getElementById('mistral-input').value;
       const output = document.getElementById('mistral-response');

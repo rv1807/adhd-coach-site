@@ -275,16 +275,15 @@
     }
 
     function fetchQuoteOfTheDay() {
-  fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.quotable.io/random'))
-    .then(response => response.json())
+  fetch("https://zenquotes.io/api/random")
+    .then(res => res.json())
     .then(data => {
-      const parsed = JSON.parse(data.contents);
-      const quote = parsed.content;
-      const author = parsed.author;
+      const quote = data[0].q;
+      const author = data[0].a;
       displayQuote(quote, author);
     })
     .catch(error => {
-      console.error('Error fetching quote:', error);
+      console.error("Error fetching quote:", error);
       displayQuote("Start where you are. Use what you have. Do what you can.", "Arthur Ashe");
     });
 }

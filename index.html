@@ -322,6 +322,28 @@ function displayQuote(quote, author) {
   }
 }
 
+    function setupMatrixPersistence() {
+  const ids = [
+    "urgent-important",
+    "not-urgent-important",
+    "urgent-not-important",
+    "not-urgent-not-important"
+  ];
+
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+
+    // Restore saved content from localStorage
+    const saved = localStorage.getItem(id);
+    if (saved) el.innerHTML = saved;
+
+    // Save to localStorage on every change
+    el.addEventListener("input", () => {
+      localStorage.setItem(id, el.innerHTML);
+    });
+  });
+}
+
     
     auth.onAuthStateChanged(user => toggleUI(!!user, user));
   </script>

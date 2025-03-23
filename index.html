@@ -161,7 +161,11 @@
       document.getElementById('auth-section').classList.toggle('hidden', loggedIn);
       document.getElementById('dashboard').classList.toggle('hidden', !loggedIn);
       document.getElementById('nav-links').classList.toggle('hidden', !loggedIn);
-      if (user) document.getElementById('welcome-msg').textContent = `Welcome, ${user.email} 👋`;
+     if (user) {
+  document.getElementById('welcome-msg').textContent = `Welcome, ${user.email} 👋`;
+  fetchQuoteOfTheDay();
+}
+
     }
 
     function signup() {
@@ -270,6 +274,31 @@
       });
     }
 
+    function fetchQuoteOfTheDay() {
+  fetch('https://api.quotable.io/random')
+    .then(response => response.json())
+    .then(data => {
+      const quote = data.content;
+      const author = data.author;
+      displayQuote(quote, author);
+    })
+    .catch(error => {
+      console.error('Error fetching quote:', error);
+      displayQuote("Start where you are. Use what you have. Do what you can.", "Arthur Ashe"); // Fallback quote
+    });
+}
+
+function displayQuote(quote, author) {
+  const quoteElement = document.getElementById('quote-text');
+  const authorElement = document.getElementById('quote-author');
+
+  if (quoteElement && authorElement) {
+    quoteElement.textContent = `"${quote}"`;
+    authorElement.textContent = `— ${author}`;
+  }
+}
+
+    
     auth.onAuthStateChanged(user => toggleUI(!!user, user));
   </script>
 </body>

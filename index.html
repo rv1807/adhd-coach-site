@@ -159,7 +159,7 @@
       document.getElementById('auth-section').classList.toggle('hidden', loggedIn);
       document.getElementById('dashboard').classList.toggle('hidden', !loggedIn);
       document.getElementById('nav-links').classList.toggle('hidden', !loggedIn);
-      if (user) document.getElementById('welcome-msg').textContent = `Welcome back, ${user.email} 👋`;
+      if (user) document.getElementById('welcome-msg').textContent = `Welcome, ${user.email} 👋`;
     }
 
     function signup() {
